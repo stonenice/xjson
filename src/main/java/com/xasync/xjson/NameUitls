@@ -1,0 +1,205 @@
+package com.sto.json.util;
+
+/**
+ * <b>Class:</b> NameTools<br><br>
+ * <b>Date:</b> 2014年6月24日 下午7:29:01<br><br>
+ * <b>Description:</b> 该类是一个工具类，里面的方法都是静态方法。主要的功能是
+ * 完成约定的命名转化，常见的命名规则由小驼峰（jsonobject），大驼峰(JsonObject)
+ * 和下划线(json_object)等方式。
+ *
+ * @author stone
+ * @version STOJson-v1.4
+ */
+public class NameTools {
+	/**
+	 *<b>Type:</b>String<br>
+	 *<b>Description:</b> CLASS_BEAN_UC_SUFFIX
+	 */
+	public static final String CLASS_BEAN_UC_SUFFIX="Bean";
+	
+	/**
+	 *<b>Type:</b>String<br>
+	 *<b>Description:</b> CLASS_BEAN_LC_SUFFIX
+	 */
+	public static final String CLASS_BEAN_LC_SUFFIX="bean";
+	
+	/**
+	 *<b>Type:</b>String<br>
+	 *<b>Description:</b> CLASS_MODEL_UC_SUFFIX
+	 */
+	public static final String CLASS_MODEL_UC_SUFFIX="Model";
+	
+	/**
+	 *<b>Type:</b>String<br>
+	 *<b>Description:</b> CLASS_MODEL_LC_SUFFIX
+	 */
+	public static final String CLASS_MODEL_LC_SUFFIX="model";
+	
+    /**
+     *<b>Type:</b>String<br>
+     *<b>Description:</b> METHOD_ADD_PREFIX
+     */
+    public static final String METHOD_ADD_PREFIX = "add";
+    
+    /**
+     *<b>Type:</b>String<br>
+     *<b>Description:</b> METHOD_REMOVE_PREFIX
+     */
+    public static final String METHOD_REMOVE_PREFIX = "remove";
+    
+    /**
+     *<b>Type:</b>String<br>
+     *<b>Description:</b> METHOD_GET_PREFIX
+     */
+    public static final String METHOD_GET_PREFIX = "get";
+    
+    /**
+     *<b>Type:</b>String<br>
+     *<b>Description:</b> METHOD_SET_PREFIX
+     */
+    public static final String METHOD_SET_PREFIX = "set";
+    
+    /**
+     *<b>Type:</b>String<br>
+     *<b>Description:</b> METHOD_IS_PREFIX
+     */
+    public static final String METHOD_IS_PREFIX = "is";
+	
+	/**
+	 * <b>描述:</b><br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 根据一个JavaBean（POJO/VO）的类名获取它所对应的数据库表的名称
+	 *
+	 * @param name 参数类型:String 参数描述:JavaBean(POJO/VO)的类名
+	 * @return String
+	 */ 
+	public final static String getTableName(String name)
+	{
+		int i=-1;
+		i=name.lastIndexOf(CLASS_MODEL_UC_SUFFIX);
+		if(i>=0)
+		{
+			return name.substring(0,i);
+		}
+		
+		i=name.lastIndexOf(CLASS_MODEL_LC_SUFFIX);
+		if(i>=0)
+		{
+			return name.substring(0,i);
+		}
+		
+		i=name.lastIndexOf(CLASS_BEAN_UC_SUFFIX);
+		if(i>=0)
+		{
+			return name.substring(0,i);
+		}
+		
+		i=name.lastIndexOf(CLASS_BEAN_LC_SUFFIX);
+		if(i>=0)
+		{
+			return name.substring(0,i);
+		}
+		return name;
+	}
+	
+	/**
+	 * <b>描述:</b><br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 将一个以下划线分割的名称转化成驼峰命名约定
+	 *
+	 * @param lineName 参数类型:String 参数描述:以下划线分割的名称,如：data_source
+	 * @return String
+	 */ 
+	public final static String toCmaleName(String lineName)
+	{
+		if(lineName==null||lineName.length()<=0)
+			return null;
+		StringBuilder builder=new StringBuilder();
+		for(int i=0;i<lineName.length();i++)
+		{
+			char c=lineName.charAt(i);
+			if(c=='_')
+			{
+				i++;
+				c=lineName.charAt(i);
+				builder.append(Character.toUpperCase(c));
+			}
+			else
+			{
+				builder.append(c);
+			}
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * <b>描述:</b><br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 将以驼峰命名的名称转化成以下划线分割的名称
+	 *
+	 * @param camelName 参数类型:String 参数描述:驼峰法命名的名称
+	 * @return String
+	 */ 
+	public final static String toLineName(String camelName)
+	{
+		if(camelName==null||camelName.length()<=0)
+			return null;
+		StringBuilder builder=new StringBuilder();
+		for(int i=0;i<camelName.length();i++)
+		{
+			char c=camelName.charAt(i);
+			if(Character.isUpperCase(c))
+			{
+				if(i!=0)
+					builder.append('_');
+				builder.append(Character.toLowerCase(c));
+			}
+			else
+			{
+				builder.append(c);
+			}
+		}
+		
+		return builder.toString();
+	}
+	
+	
+	/**
+	 * <b>描述:</b><br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 判断一个给定的名称是不是以下滑线命名
+	 *
+	 * @param name 参数类型:String 参数描述:需要判断的名称
+	 * @return boolean
+	 */ 
+	public final static boolean isLineName(String name)
+	{
+		if(name==null||name.length()<=0)
+			return false;
+		for(int i=0;i<name.length();i++)
+		{
+			if(name.charAt(i)=='_')
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * <b>描述:</b><br>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	 * 将给定字符串的第一个字符大写后返回新的字符串
+	 *
+	 * @param name 参数类型：String 参数描述：需要处理的字符串
+	 * @return String
+	 */ 
+	public final static String capitalize(String name)
+	{
+	    if(name==null||name.length()<=0)
+	    	return null;
+	    name=name.trim();
+	    return Character.toUpperCase(name.charAt(0))+name.substring(1);
+    }
+
+}
